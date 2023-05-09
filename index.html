@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Editor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>My Images</h2>
+            <div id="assetsList"></div>
+            <button id="exportAssets">Export Images</button>
+            <input type="file" id="importAssets" accept=".png, .jpg, .jpeg" multiple>
+            </br>
+        </br>
+            <h2>Colors</h2>
+            <div id="colorsList"></div>
+        </div>
+        <div class="main">
+            <div class="controls">
+                <label for="canvasSize">Canvas Size:</label>
+                <select id="canvasSize">
+                    <option value="16">16x16</option>
+                    <option value="24">24x24</option>
+                    <option value="32">32x32</option>
+                    <option value="42">42x42</option>
+                    <option value="64">64x64</option>
+                  </select>
+                <label for="colorPicker">Color:</label>
+                <input type="color" id="colorPicker" value="#000000">
+                <button id="clearCanvas">Clear</button>
+                <button id="toggleGrid">Toggle Grid</button>
+                <button id="saveAsset">Save Image</button>
+            </div>
+            <div class="canvas-container">
+                <canvas id="gridCanvas"></canvas>
+                <canvas id="canvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script src="scripts.js"></script>
+</body>
+</html>
