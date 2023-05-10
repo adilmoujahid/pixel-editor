@@ -6,7 +6,7 @@ const gridCtx = gridCanvas.getContext("2d");
 const assets = document.getElementById("assets");
 
 let canvasSize = parseInt(document.getElementById("canvasSize").value);
-let gridSize = 12;
+let gridSize = parseInt(document.getElementById("gridSize").value);
 canvas.width = gridCanvas.width = canvasSize * gridSize;
 canvas.height = gridCanvas.height = canvasSize * gridSize;
 
@@ -20,6 +20,14 @@ setColor(document.getElementById("colorPicker").value);
 // Functions
 
 // Sets the color
+function updateCanvasSize() {
+  canvasSize = parseInt(document.getElementById("canvasSize").value);
+  gridSize = parseInt(document.getElementById("gridSize").value);
+  canvas.width = gridCanvas.width = canvasSize * gridSize;
+  canvas.height = gridCanvas.height = canvasSize * gridSize;
+  drawGrid();
+}
+
 function setColor(newColor) {
   if (newColor) {
     color = newColor;
@@ -282,6 +290,11 @@ function updateColorOnCanvas(oldColor, newColor) {
 
 // Event listeners and UI interactions
 
+// Update the canvas size when the "Grid Size" dropdown value changes
+document.getElementById("gridSize").addEventListener("change", () => {
+  updateCanvasSize();
+});
+
 // Draw on canvas when mouse button is pressed
 canvas.addEventListener("mousedown", (e) => {
   isDrawing = true;
@@ -354,10 +367,7 @@ document.getElementById("saveAsset").addEventListener("click", () => {
 
 // Update the canvas size when the "Canvas Size" dropdown value changes
 document.getElementById("canvasSize").addEventListener("change", (e) => {
-  canvasSize = parseInt(e.target.value);
-  canvas.width = gridCanvas.width = canvasSize * gridSize;
-  canvas.height = gridCanvas.height = canvasSize * gridSize;
-  drawGrid();
+  updateCanvasSize();
 });
 
 // Export assets when the "Export Assets" button is clicked
