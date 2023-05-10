@@ -21,6 +21,8 @@ Pixel Editor is a simple web application that allows users to create pixel art, 
 - Import and export assets as images
 - Visualize all unique colors of an image
 - Modify the colors of an image
+- Fill grid squares with the most dominant color within the square
+
 
 ## How to Run
 
