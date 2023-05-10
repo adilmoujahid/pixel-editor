@@ -288,6 +288,54 @@ function updateColorOnCanvas(oldColor, newColor) {
   ctx.putImageData(imgData, 0, 0);
 }
 
+// Gets the dominant color in a square of pixels
+function getDominantColorInSquare(x, y, squareSize) {
+  const imgData = ctx.getImageData(x, y, squareSize, squareSize);
+  const data = imgData.data;
+  const colorCounts = {};
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3];
+
+    if (a === 0) continue;
+
+    const color = `rgba(${r}, ${g}, ${b}, ${a / 255})`;
+    colorCounts[color] = (colorCounts[color] || 0) + 1;
+  }
+
+  let dominantColor = null;
+  let maxCount = 0;
+
+  for (const color in colorCounts) {
+    if (colorCounts[color] > maxCount) {
+      maxCount = colorCounts[color];
+      dominantColor = color;
+    }
+  }
+
+  return dominantColor;
+}
+
+// Fills the canvas with the dominant color in each square
+function fillCanvasWithDominantColor() {
+  let gridSize = parseInt(document.getElementById("gridSize").value);
+
+  for (let x = 0; x < canvas.width; x += gridSize) {
+    for (let y = 0; y < canvas.height; y += gridSize) {
+      const dominantColor = getDominantColorInSquare(x, y, gridSize);
+
+      if (dominantColor) {
+        ctx.fillStyle = dominantColor;
+        ctx.fillRect(x, y, gridSize, gridSize);
+      }
+    }
+  }
+}
+
+
 // Event listeners and UI interactions
 
 // Update the canvas size when the "Grid Size" dropdown value changes
@@ -378,6 +426,12 @@ document.getElementById("exportAssets").addEventListener("click", () => {
 // Import assets when the "Import Assets" input changes
 document.getElementById("importAssets").addEventListener("change", (e) => {
   importImages(e, "assetsList");
+});
+
+// Pixelate the image once the button is clicked
+document.getElementById("fillDominantColor").addEventListener("click", () => {
+  fillCanvasWithDominantColor();
+  displayColors(getColorsInCanvas());
 });
 
 // Resize all saved images in the assets list
