@@ -237,7 +237,6 @@ function displayColors(colors) {
   });
 }
 
-
 // Converts an RGBA color string to a hexadecimal color string
 function rgbaToHex(rgba) {
   // Extracts the rgba values from the input string
@@ -338,6 +337,35 @@ function fillCanvasWithDominantColor() {
     }
   }
 }
+
+// Mirrors the canvas (left or right)
+function mirrorCanvas(direction) {
+  const canvasWidth = canvas.width;
+  const canvasHeight = canvas.height;
+  const halfWidth = canvasWidth / 2;
+
+  const tempCanvas = document.createElement("canvas");
+  tempCanvas.width = halfWidth;
+  tempCanvas.height = canvasHeight;
+  const tempCtx = tempCanvas.getContext("2d");
+
+  if (direction === "left") {
+    tempCtx.drawImage(canvas, 0, 0, halfWidth, canvasHeight, 0, 0, halfWidth, canvasHeight);
+  } else if (direction === "right") {
+    tempCtx.drawImage(canvas, halfWidth, 0, halfWidth, canvasHeight, 0, 0, halfWidth, canvasHeight);
+  }
+
+  tempCtx.translate(halfWidth, 0);
+  tempCtx.scale(-1, 1);
+  tempCtx.drawImage(tempCanvas, 0, 0, halfWidth, canvasHeight, 0, 0, halfWidth, canvasHeight);
+
+  if (direction === "left") {
+    ctx.drawImage(tempCanvas, 0, 0, halfWidth, canvasHeight, halfWidth, 0, halfWidth, canvasHeight);
+  } else if (direction === "right") {
+    ctx.drawImage(tempCanvas, 0, 0, halfWidth, canvasHeight);
+  }
+}
+
 
 
 // Event listeners and UI interactions
@@ -446,6 +474,20 @@ document.getElementById("toggleTransparency").addEventListener("change", (e) => 
     setColor(document.getElementById("colorPicker").value);
   }
 });
+
+// Mirror the canvas when the "Mirror Left" is clicked
+document.getElementById("mirrorLeft").addEventListener("click", () => {
+  mirrorCanvas("left");
+  displayColors(getColorsInCanvas());
+});
+
+// Mirror the canvas when the "Mirror Right" is clicked
+
+document.getElementById("mirrorRight").addEventListener("click", () => {
+  mirrorCanvas("right");
+  displayColors(getColorsInCanvas());
+});
+
 
 // Resize all saved images in the assets list
 function resizeAllSavedImages() {
