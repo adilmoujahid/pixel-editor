@@ -344,27 +344,36 @@ function mirrorCanvas(direction) {
   const canvasHeight = canvas.height;
   const halfWidth = canvasWidth / 2;
 
-  const tempCanvas = document.createElement("canvas");
-  tempCanvas.width = halfWidth;
-  tempCanvas.height = canvasHeight;
-  const tempCtx = tempCanvas.getContext("2d");
+  const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+  const mirroredData = ctx.createImageData(canvasWidth, canvasHeight);
+  const data = imageData.data;
+  const mirrored = mirroredData.data;
 
-  if (direction === "left") {
-    tempCtx.drawImage(canvas, 0, 0, halfWidth, canvasHeight, 0, 0, halfWidth, canvasHeight);
-  } else if (direction === "right") {
-    tempCtx.drawImage(canvas, halfWidth, 0, halfWidth, canvasHeight, 0, 0, halfWidth, canvasHeight);
+  for (let y = 0; y < canvasHeight; y++) {
+    for (let x = 0; x < canvasWidth; x++) {
+      const index = (y * canvasWidth + x) * 4;
+      let mirroredIndex;
+
+      if (direction === "left") {
+        mirroredIndex = x < halfWidth
+          ? (y * canvasWidth + (canvasWidth - x - 1)) * 4
+          : index;
+      } else if (direction === "right") {
+        mirroredIndex = x >= halfWidth
+          ? (y * canvasWidth + (halfWidth - (x - halfWidth) - 1)) * 4
+          : index;
+      }
+
+      mirrored[index] = data[mirroredIndex];
+      mirrored[index + 1] = data[mirroredIndex + 1];
+      mirrored[index + 2] = data[mirroredIndex + 2];
+      mirrored[index + 3] = data[mirroredIndex + 3];
+    }
   }
 
-  tempCtx.translate(halfWidth, 0);
-  tempCtx.scale(-1, 1);
-  tempCtx.drawImage(tempCanvas, 0, 0, halfWidth, canvasHeight, 0, 0, halfWidth, canvasHeight);
-
-  if (direction === "left") {
-    ctx.drawImage(tempCanvas, 0, 0, halfWidth, canvasHeight, halfWidth, 0, halfWidth, canvasHeight);
-  } else if (direction === "right") {
-    ctx.drawImage(tempCanvas, 0, 0, halfWidth, canvasHeight);
-  }
+  ctx.putImageData(mirroredData, 0, 0);
 }
+
 
 
 
