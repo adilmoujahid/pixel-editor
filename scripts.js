@@ -58,10 +58,14 @@ function drawGrid() {
 // Draws a pixel on the canvas
 function drawPixel(x, y) {
   const size = canvas.width / canvasSize;
-  ctx.clearRect(x * size, y * size, size, size);
-  ctx.fillStyle = color;
-  ctx.fillRect(x * size, y * size, size, size);
+  if (color === "transparent") {
+    ctx.clearRect(x * size, y * size, size, size);
+  } else {
+    ctx.fillStyle = color;
+    ctx.fillRect(x * size, y * size, size, size);
+  }
 }
+
 
 // Gets the index of the clicked pixel on the canvas
 function getIndex(x, y) {
@@ -194,42 +198,42 @@ function displayColors(colors) {
   colorsList.innerHTML = "";
 
   colors.forEach(color => {
-      const colorDiv = document.createElement("div");
-      colorDiv.style.backgroundColor = color;
-      colorDiv.style.width = "20px";
-      colorDiv.style.height = "20px";
-      colorDiv.style.border = "1px solid #000";
-      colorDiv.style.display = "inline-block";
-      colorDiv.style.margin = "2px";
-      colorDiv.style.cursor = "pointer";
-      colorDiv.title = color;
-      colorDiv.addEventListener("click", () => {
-          // Create and configure the color input
-          const input = document.createElement("input");
-          input.type = "color";
-          input.value = color;
-          input.style.position = "absolute";
-          input.style.opacity = 0;
-          input.style.width = "20px";
-          input.style.height = "20px";
-          input.style.cursor = "pointer";
-          input.addEventListener("change", (e) => {
-              // Update the color of the colorDiv and the canvas
-              const oldColor = colorDiv.style.backgroundColor;
-              const newColor = e.target.value;
-              colorDiv.style.backgroundColor = newColor;
-              updateColorOnCanvas(oldColor, newColor);
-          });
-
-          // Append the color input to the colorDiv and trigger a click event to open the color picker
-          colorDiv.appendChild(input);
-          input.click();
-          input.addEventListener("blur", () => {
-              colorDiv.removeChild(input);
-          });
+    const colorDiv = document.createElement("div");
+    colorDiv.style.backgroundColor = color;
+    colorDiv.style.width = "20px";
+    colorDiv.style.height = "20px";
+    colorDiv.style.border = "1px solid #000";
+    colorDiv.style.display = "inline-block";
+    colorDiv.style.margin = "2px";
+    colorDiv.style.cursor = "pointer";
+    colorDiv.title = color;
+    colorDiv.addEventListener("click", () => {
+      // Create and configure the color input
+      const input = document.createElement("input");
+      input.type = "color";
+      input.value = color;
+      input.style.position = "absolute";
+      input.style.opacity = 0;
+      input.style.width = "20px";
+      input.style.height = "20px";
+      input.style.cursor = "pointer";
+      input.addEventListener("change", (e) => {
+        // Update the color of the colorDiv and the canvas
+        const oldColor = colorDiv.style.backgroundColor;
+        const newColor = e.target.value;
+        colorDiv.style.backgroundColor = newColor;
+        updateColorOnCanvas(oldColor, newColor);
       });
 
-      colorsList.appendChild(colorDiv);
+      // Append the color input to the colorDiv and trigger a click event to open the color picker
+      colorDiv.appendChild(input);
+      input.click();
+      input.addEventListener("blur", () => {
+        colorDiv.removeChild(input);
+      });
+    });
+
+    colorsList.appendChild(colorDiv);
   });
 }
 
@@ -241,8 +245,8 @@ function rgbaToHex(rgba) {
 
   // Converts the rgba values to hexadecimal and concatenates the result
   return "#" + parts.slice(0, 3).map((x) => {
-      const hex = parseInt(x).toString(16);
-      return hex.length === 1 ? "0" + hex : hex;
+    const hex = parseInt(x).toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
   }).join("");
 }
 
@@ -268,20 +272,20 @@ function updateColorOnCanvas(oldColor, newColor) {
 
   // Iterate over the image data to find and replace the old color with the new color
   for (let i = 0; i < data.length; i += 4) {
-      const r = data[i];
-      const g = data[i + 1];
-      const b = data[i + 2];
-      const a = data[i + 3];
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3];
 
-      if (a === 0) continue;
+    if (a === 0) continue;
 
-      const currentColorHex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
-      if (currentColorHex === oldColorHex) {
-          const rgba = newColorRGB.match(/[\d.]+/g);
-          data[i] = rgba[0];
-          data[i + 1] = rgba[1];
-          data[i + 2] = rgba[2];
-      }
+    const currentColorHex = `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    if (currentColorHex === oldColorHex) {
+      const rgba = newColorRGB.match(/[\d.]+/g);
+      data[i] = rgba[0];
+      data[i + 1] = rgba[1];
+      data[i + 2] = rgba[2];
+    }
   }
 
   // Update the canvas with the modified image data
@@ -397,7 +401,7 @@ document.getElementById("saveAsset").addEventListener("click", () => {
 
   // Add an event listener to load the saved asset when clicked
   img.addEventListener("click", () => {
-      loadSavedImage(img);
+    loadSavedImage(img);
   });
 
   // Create a checkbox element for the saved asset
@@ -434,11 +438,20 @@ document.getElementById("fillDominantColor").addEventListener("click", () => {
   displayColors(getColorsInCanvas());
 });
 
+// Toggle transparency when the checkbox is clicked
+document.getElementById("toggleTransparency").addEventListener("change", (e) => {
+  if (e.target.checked) {
+    color = "transparent";
+  } else {
+    setColor(document.getElementById("colorPicker").value);
+  }
+});
+
 // Resize all saved images in the assets list
 function resizeAllSavedImages() {
   const savedImages = document.querySelectorAll(".saved-image");
   savedImages.forEach((img) => {
-      resizeSavedImage(img);
+    resizeSavedImage(img);
   });
 }
 
