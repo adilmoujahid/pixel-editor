@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Editor</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="container">
         <div class="sidebar">
@@ -14,7 +16,7 @@
             <button id="exportAssets">Export Images</button>
             <input type="file" id="importAssets" accept=".png, .jpg, .jpeg" multiple>
             </br>
-        </br>
+            </br>
             <h2>Colors</h2>
             <div id="colorsList"></div>
         </div>
@@ -35,15 +37,19 @@
                     <option value="32">32x32</option>
                     <option value="42">42x42</option>
                     <option value="64">64x64</option>
-                  </select>
+                </select>
                 <label for="colorPicker">Color:</label>
                 <input type="color" id="colorPicker" value="#000000">
                 <label for="toggleTransparency">Erase Pixel</label>
                 <input type="checkbox" id="toggleTransparency" />
+            </div>
+            <div class="controls">
                 <button id="clearCanvas">Clear</button>
                 <button id="toggleGrid">Toggle Grid</button>
                 <button id="mirrorLeft">Mirror Left</button>
                 <button id="mirrorRight">Mirror Right</button>
+                <button id="translateUp">Up</button>
+                <button id="translateDown">Down</button>
                 <button id="fillDominantColor">Pixelate</button>
                 <button id="saveAsset">Save Image</button>
             </div>
@@ -55,4 +61,5 @@
     </div>
     <script src="scripts.js"></script>
 </body>
+
 </html>

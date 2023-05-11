@@ -375,6 +375,36 @@ function mirrorCanvas(direction) {
 }
 
 
+//Translate Canvas
+function translateCanvas(direction, gridSize) {
+  const canvasWidth = canvas.width;
+  const canvasHeight = canvas.height;
+
+  const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+  const translatedData = ctx.createImageData(canvasWidth, canvasHeight);
+  const data = imageData.data;
+  const translated = translatedData.data;
+
+  for (let y = 0; y < canvasHeight; y++) {
+    for (let x = 0; x < canvasWidth; x++) {
+      const index = (y * canvasWidth + x) * 4;
+      let translatedIndex;
+
+      if (direction === "up") {
+        translatedIndex = ((y + gridSize) % canvasHeight) * canvasWidth * 4 + x * 4;
+      } else if (direction === "down") {
+        translatedIndex = ((y - gridSize + canvasHeight) % canvasHeight) * canvasWidth * 4 + x * 4;
+      }
+
+      translated[index] = data[translatedIndex];
+      translated[index + 1] = data[translatedIndex + 1];
+      translated[index + 2] = data[translatedIndex + 2];
+      translated[index + 3] = data[translatedIndex + 3];
+    }
+  }
+
+  ctx.putImageData(translatedData, 0, 0);
+}
 
 
 // Event listeners and UI interactions
@@ -491,12 +521,20 @@ document.getElementById("mirrorLeft").addEventListener("click", () => {
 });
 
 // Mirror the canvas when the "Mirror Right" is clicked
-
 document.getElementById("mirrorRight").addEventListener("click", () => {
   mirrorCanvas("right");
   displayColors(getColorsInCanvas());
 });
 
+// Translate the canvas when the "Translate Left" is clicked
+document.getElementById("translateUp").addEventListener("click", () => {
+  translateCanvas("up", gridSize);
+});
+
+// Translate the canvas when the "Translate Right" is clicked
+document.getElementById("translateDown").addEventListener("click", () => {
+  translateCanvas("down", gridSize);
+});
 
 // Resize all saved images in the assets list
 function resizeAllSavedImages() {
